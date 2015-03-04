@@ -1,3 +1,17 @@
+/*******************************************
+contrechoc 2015, copyright? Do what you like with this file!
+
+Processing sketh making single layers from a gcode file, splitting on z values.
+
+input: gcode file => see line: String stlName = "charlie_top-29_layers_hilbert";
+output: layers and a recombined file with selected layers
+
+
+part of a research about making relief prints with a 3D printer
+see text on 
+
+**********************************************/
+
 String[] lines;
 String[][] layers = new String [200][90000];
 int index = 0;
@@ -54,18 +68,18 @@ void setup() {
   String[] layer1;
   String[] layer2;
   String[] layer3;
-   String[] layer4;
-   String[] layer10;
+  String[] layer4;
+  String[] layer10;
 
   layer1 = loadStrings(stlName + "_layer"+str(0)+".txt");
   layer2 = loadStrings(stlName + "_layer"+str(1)+".txt");
   layer3 = loadStrings(stlName + "_layer"+str(2)+".txt");
-  
-   layer4 = loadStrings(stlName + "_layer"+str(patternlayer)+".txt");
-   
+
+  layer4 = loadStrings(stlName + "_layer"+str(patternlayer)+".txt");
+
   layer10 = loadStrings(stlName + "_layer"+str(extraLayer)+".txt");
 
-  int total_lines = layer1.length + layer2.length + layer3.length+ layer10.length ;
+  int total_lines = layer1.length + layer2.length + layer3.length+ layer4.length+ layer10.length ;
 
   String[] outputGcodeL = new String [total_lines + 2];
   for (int j = 0; j < layer1.length; j++) {
@@ -74,17 +88,17 @@ void setup() {
   for (int j = 0; j < layer2.length; j++) {
     outputGcodeL[j+ layer1.length] = layer2[j];
   }
-  
+
   //bottom layer
   for (int j = 0; j < layer3.length; j++) {
     outputGcodeL[j+ layer1.length+ layer2.length] = layer3[j];
   }
-  
+
   //patternlayer
-    for (int j = 0; j < layer4.length; j++) {
+  for (int j = 0; j < layer4.length; j++) {
     outputGcodeL[j+ layer1.length+ layer2.length+ layer3.length] = layer4[j];
   }
-  
+
   //extra shape layer
   for (int j = 0; j < layer10.length; j++) {
     outputGcodeL[j+ layer1.length+ layer2.length+ layer3.length+ layer4.length] = layer10[j];
@@ -92,8 +106,8 @@ void setup() {
 
   outputGcodeL[  layer1.length+ layer2.length+ layer3.length+ layer10.length] = "M104 S0 ; turn off temperature";
   outputGcodeL[  layer1.length+ layer2.length+ layer3.length+ layer10.length+1] = "G92 E0 ; ------------------!!!";
-  
-   saveStrings(stlName + "_total"+ ".txt", outputGcodeL);
+
+  saveStrings(stlName + "_total"+ ".txt", outputGcodeL);
 }
 
 void draw() 
